@@ -12,6 +12,7 @@
 ASRProjectileBase::ASRProjectileBase()
 {
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->SetCollisionProfileName("Projectile");
 	RootComponent = SphereCollision;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
@@ -26,6 +27,8 @@ ASRProjectileBase::ASRProjectileBase()
 	NiagaraParticleComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraParticleComponent"));
 	NiagaraParticleComponent->SetupAttachment(RootComponent);
 	NiagaraParticleComponent->SetAutoActivate(true);
+
+	DamageAmount = 5.0f;
 }
 
 void ASRProjectileBase::PostInitializeComponents()

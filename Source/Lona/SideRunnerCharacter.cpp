@@ -151,3 +151,8 @@ void ASideRunnerCharacter::UpdateCharacterFaceDirection()
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, FMath::FInterpTo(CurrentRotationYaw, TargetRotationYaw, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 5.0f), 0.0f));
 	}
 }
+
+USRAttributeComponent* ASideRunnerCharacter::GetAttributeComponent() const
+{
+	return AttributeComponent;
+}

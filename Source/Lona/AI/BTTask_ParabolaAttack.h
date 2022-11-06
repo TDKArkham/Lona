@@ -6,7 +6,7 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTask_ParabolaAttack.generated.h"
 
-class ASRProjectile_EnemyParabola;
+class ASRProjectileBase;
 /**
  * 
  */
@@ -17,7 +17,7 @@ class LONA_API UBTTask_ParabolaAttack : public UBTTaskNode
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Projectile")
-	TSubclassOf<ASRProjectile_EnemyParabola> ParabolaProjectile;
+	TSubclassOf<ASRProjectileBase> ParabolaProjectile;
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

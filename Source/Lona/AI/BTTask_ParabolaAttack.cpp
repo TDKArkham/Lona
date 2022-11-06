@@ -4,14 +4,14 @@
 #include "BTTask_ParabolaAttack.h"
 
 #include "AIController.h"
-#include "Lona/SRProjectile_EnemyParabola.h"
+#include "Lona/SRProjectileBase.h"
 
 EBTNodeResult::Type UBTTask_ParabolaAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	
-	if(ParabolaProjectile)
+	if(ensureMsgf(ParabolaProjectile, TEXT("Plaease assign projectile class to ParabolaProjectile slot!!!")))
 	{
 		AAIController* AIC = OwnerComp.GetAIOwner();
 		if(AIC)
