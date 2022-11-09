@@ -38,6 +38,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	UNiagaraSystem* HitEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile")
+	float DamageAmount;
 	
 public:
 	UFUNCTION()

@@ -57,4 +57,8 @@ protected:
 
 	UFUNCTION()
 	void UpdateCharacterFaceDirection();
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	USRAttributeComponent* GetAttributeComponent() const;
 };
