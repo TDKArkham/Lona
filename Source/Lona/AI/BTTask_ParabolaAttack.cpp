@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_ParabolaAttack::ExecuteTask(UBehaviorTreeComponent& 
 		AAIController* AIC = OwnerComp.GetAIOwner();
 		if(AIC)
 		{
-			APawn* OwnerPawn = Cast<APawn>(AIC->GetOwner());
+			APawn* OwnerPawn = Cast<APawn>(AIC->GetPawn());
 			if(OwnerPawn)
 			{
 				FActorSpawnParameters SpawnParam;

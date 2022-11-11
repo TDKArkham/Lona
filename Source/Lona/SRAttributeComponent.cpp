@@ -26,6 +26,16 @@ float USRAttributeComponent::GetHealthMax() const
 	return HealthMax;
 }
 
+USRAttributeComponent* USRAttributeComponent::GetAttributeComponent(AActor* TargetActor)
+{
+	if(TargetActor)
+	{
+		return Cast<USRAttributeComponent>(TargetActor->GetComponentByClass(StaticClass()));
+	}
+
+	return nullptr;
+}
+
 bool USRAttributeComponent::ApplyHealthChange(AActor* InstigateActor, float Delta)
 {
 	float OldHealth = Health;

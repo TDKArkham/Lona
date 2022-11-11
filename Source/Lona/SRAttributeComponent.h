@@ -28,15 +28,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float HealthMax;
 
+public:
 	UPROPERTY(BlueprintAssignable, Category = "Attributes")
 	FOnAttributeChanged OnHealthChanged;
-
-public:
+	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	float GetHealthMax() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static USRAttributeComponent* GetAttributeComponent(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigateActor, float Delta);

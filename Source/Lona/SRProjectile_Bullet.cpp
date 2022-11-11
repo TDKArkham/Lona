@@ -17,10 +17,12 @@ void ASRProjectile_Bullet::BeginPlay()
 void ASRProjectile_Bullet::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	ASideRunnerCharacter* Player = Cast<ASideRunnerCharacter>(OtherActor);
-	if (Player)
+	if(OtherActor && OtherActor != GetInstigator())
 	{
-		Player->GetAttributeComponent()->ApplyHealthChange(GetInstigator(), -DamageAmount);
-		HitExplode();
+		USRAttributeComponent* Target = USRAttributeComponent::GetAttributeComponent(OtherActor);
+		if(Target && Target->ApplyHealthChange(GetInstigator(), -DamageAmount))
+		{
+			HitExplode();
+		}
 	}
 }
