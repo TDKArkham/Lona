@@ -22,7 +22,13 @@ void UBTService_CheckWithinAttackRange::TickNode(UBehaviorTreeComponent& OwnerCo
 				float Distance = FVector::Distance(TargetPawn->GetActorLocation(), AIController->GetPawn()->GetActorLocation());
 				bool bWithinRange = Distance < AttackRange;
 
-				Blackboard->SetValueAsBool(KeySelector.SelectedKeyName, bWithinRange);
+				bool bHasLOS = false;
+				if (bWithinRange)
+				{
+					bHasLOS = AIController->LineOfSightTo(TargetPawn);
+				}
+
+				Blackboard->SetValueAsBool(KeySelector.SelectedKeyName, (bWithinRange && bHasLOS));
 			}
 		}
 	}

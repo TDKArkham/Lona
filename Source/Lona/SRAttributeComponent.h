@@ -39,6 +39,9 @@ public:
 	float GetHealthMax() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool GetIsAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	static USRAttributeComponent* GetAttributeComponent(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")

@@ -25,12 +25,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UPawnSensingComponent* PawnSensingComponent;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UAnimMontage* DeathMontage;
 
 	UFUNCTION()
 	void OnSeePawn(APawn* Pawn);

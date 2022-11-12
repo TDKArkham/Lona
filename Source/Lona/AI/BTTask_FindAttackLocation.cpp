@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_FindAttackLocation::ExecuteTask(UBehaviorTreeCompone
 		if (OwnerCharacter && OwnerCharacter->LocationsToGo.Num() > 0)
 		{
 			int32 Index = FMath::RandRange(0, OwnerCharacter->LocationsToGo.Num() - 1);
-
+			
 			Blackboard->SetValueAsVector(KeySelector.SelectedKeyName, OwnerCharacter->LocationsToGo[Index]);
 
 			return EBTNodeResult::Succeeded;

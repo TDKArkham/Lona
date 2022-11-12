@@ -46,11 +46,6 @@ void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeCompone
 				AIC->GetBrainComponent()->StopLogic("Got Killed");
 			}
 
-			if(DeathMontage)
-			{
-				PlayAnimMontage(DeathMontage);
-			}
-
 			//Disable Movement & Collision
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetCharacterMovement()->DisableMovement();
@@ -63,7 +58,6 @@ void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeCompone
 
 void ASRAICharacter::OnSeePawn(APawn* Pawn)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Saw you !!!"));
 	AAIController* AIC = Cast<AAIController>(GetController());
 	AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", Pawn);
 }

@@ -13,7 +13,7 @@ USRAttributeComponent::USRAttributeComponent()
 void USRAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 float USRAttributeComponent::GetHealth() const
@@ -26,9 +26,14 @@ float USRAttributeComponent::GetHealthMax() const
 	return HealthMax;
 }
 
+bool USRAttributeComponent::GetIsAlive() const
+{
+	return Health > 0.0f;
+}
+
 USRAttributeComponent* USRAttributeComponent::GetAttributeComponent(AActor* TargetActor)
 {
-	if(TargetActor)
+	if (TargetActor)
 	{
 		return Cast<USRAttributeComponent>(TargetActor->GetComponentByClass(StaticClass()));
 	}
@@ -42,7 +47,7 @@ bool USRAttributeComponent::ApplyHealthChange(AActor* InstigateActor, float Delt
 	Health = FMath::Clamp(Health + Delta, 0.0f, HealthMax);
 	Delta = Health - OldHealth;
 
-	if(Delta != 0)
+	if (Delta != 0)
 	{
 		OnHealthChanged.Broadcast(InstigateActor, this, Health, Delta);
 	}
