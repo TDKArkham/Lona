@@ -35,7 +35,7 @@ void ASRAICharacter::Tick(float DeltaTime)
 
 void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta)
 {
-	if(Delta < 0.0f)
+	if (Delta < 0.0f)
 	{
 		if (NewValue <= 0.0f)
 		{
@@ -43,14 +43,18 @@ void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeCompone
 			AAIController* AIC = Cast<AAIController>(GetController());
 			if (AIC)
 			{
-				AIC->GetBrainComponent()->StopLogic("Got Killed");
+				UBrainComponent* Brain = AIC->GetBrainComponent();
+				if (Brain)
+				{
+					Brain->StopLogic("Got Killed");
+				}
 			}
 
 			//Disable Movement & Collision
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetCharacterMovement()->DisableMovement();
 
-			//SetLifeSpan, Destroy self after 10 sec
+			//SetLifeSpan, Destroy self after 5 sec
 			SetLifeSpan(5.0f);
 		}
 	}
@@ -59,5 +63,12 @@ void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeCompone
 void ASRAICharacter::OnSeePawn(APawn* Pawn)
 {
 	AAIController* AIC = Cast<AAIController>(GetController());
-	AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", Pawn);
+	if (AIC)
+	{
+		UBlackboardComponent* BB = AIC->GetBlackboardComponent();
+		if (BB)
+		{
+			BB->SetValueAsObject("TargetActor", Pawn);
+		}
+	}
 }

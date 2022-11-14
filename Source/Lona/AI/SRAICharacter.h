@@ -27,15 +27,15 @@ protected:
 	UPawnSensingComponent* PawnSensingComponent;
 
 	UFUNCTION()
-	void OnSeePawn(APawn* Pawn);
+	virtual void OnSeePawn(APawn* Pawn);
 
 	UFUNCTION()
-	void OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta);
-	
+	virtual void OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta);
+
 public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "AI", meta = (ExposeOnSpawn = true))
 	TArray<FVector> LocationsToGo;
 };

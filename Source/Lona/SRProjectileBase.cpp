@@ -47,7 +47,7 @@ void ASRProjectileBase::BeginPlay()
 
 void ASRProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hit!!!"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hit!!!"));
 	HitExplode();
 }
 
