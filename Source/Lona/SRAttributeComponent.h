@@ -28,9 +28,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float HealthMax;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attributes")
+	int32 MagicPool;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	int32 MagicPoolMax;
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Attributes")
 	FOnAttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Attributes")
+	FOnAttributeChanged OnMagicPoolChanged;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Attributes")
+	static USRAttributeComponent* GetAttributeComponent(AActor* TargetActor);
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	float GetHealth() const;
@@ -42,8 +54,14 @@ public:
 	bool GetIsAlive() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	static USRAttributeComponent* GetAttributeComponent(AActor* TargetActor);
+	bool ApplyHealthChange(AActor* InstigateActor, float Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	bool ApplyHealthChange(AActor* InstigateActor, float Delta);
+	int32 GetMagicPool() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	int32 GetMagicPoolMax() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool ApplyMagicPoolChange(float Delta);
 };

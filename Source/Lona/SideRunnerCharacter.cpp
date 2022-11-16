@@ -37,6 +37,9 @@ ASideRunnerCharacter::ASideRunnerCharacter()
 
 	AttributeComponent = CreateDefaultSubobject<USRAttributeComponent>(TEXT("AttributeComponent"));
 
+	AttackCost = 1;
+
+	bCanStartAction = true;
 	bIsFacingRight = true;
 	bIsCrouching = false;
 }
@@ -45,6 +48,7 @@ void ASideRunnerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AttributeComponent->OnHealthChanged.AddDynamic(this, &ASideRunnerCharacter::OnHealthChanged);
 }
 
 void ASideRunnerCharacter::Tick(float DeltaTime)
@@ -82,7 +86,7 @@ void ASideRunnerCharacter::MoveRight(float Value)
 
 void ASideRunnerCharacter::Fire()
 {
-	if (ProjectileClass)
+	if (bCanStartAction && ProjectileClass && AttributeComponent->ApplyMagicPoolChange(-AttackCost))
 	{
 		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		if (PC)
@@ -122,37 +126,50 @@ void ASideRunnerCharacter::Fire()
 
 void ASideRunnerCharacter::UpdateCharacterFaceDirection()
 {
-	//Re-rotate Character face direction
-	float TargetRotationYaw = 0.0f;
-	bIsFacingRight = true;
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (PC)
+	if (bCanStartAction)
 	{
-		int32 SizeX;
-		int32 SizeY;
-		PC->GetViewportSize(SizeX, SizeY);
-
-		float MouseX;
-		float MouseY;
-		PC->GetMousePosition(MouseX, MouseY);
-
-		float CameraY = FollowCamera->GetRelativeLocation().Y;
-
-		float Min = CameraY + SizeX / 2.0f;
-		float Max = CameraY + (float)SizeX;
-
-		if (!UKismetMathLibrary::InRange_FloatFloat((CameraY + MouseX), Min, Max))
+		//Re-rotate Character face direction
+		float TargetRotationYaw = 0.0f;
+		bIsFacingRight = true;
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC)
 		{
-			TargetRotationYaw = 180.f;
-			bIsFacingRight = false;
-		}
+			int32 SizeX;
+			int32 SizeY;
+			PC->GetViewportSize(SizeX, SizeY);
 
-		float CurrentRotationYaw = GetMesh()->GetRelativeRotation().Yaw;
-		GetMesh()->SetRelativeRotation(FRotator(0.0f, FMath::FInterpTo(CurrentRotationYaw, TargetRotationYaw, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 5.0f), 0.0f));
+			float MouseX;
+			float MouseY;
+			PC->GetMousePosition(MouseX, MouseY);
+
+			float CameraY = FollowCamera->GetRelativeLocation().Y;
+
+			float Min = CameraY + SizeX / 2.0f;
+			float Max = CameraY + (float)SizeX;
+
+			if (!UKismetMathLibrary::InRange_FloatFloat((CameraY + MouseX), Min, Max))
+			{
+				TargetRotationYaw = 180.f;
+				bIsFacingRight = false;
+			}
+
+			float CurrentRotationYaw = GetMesh()->GetRelativeRotation().Yaw;
+			GetMesh()->SetRelativeRotation(FRotator(0.0f, FMath::FInterpTo(CurrentRotationYaw, TargetRotationYaw, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 5.0f), 0.0f));
+		}
 	}
 }
 
-USRAttributeComponent* ASideRunnerCharacter::GetAttributeComponent() const
+void ASideRunnerCharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta)
 {
-	return AttributeComponent;
+	if (Delta < 0.0f)
+	{
+		if (NewValue <= 0.0f)
+		{
+			bCanStartAction = false;
+
+			//Disable Movement & Collision
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->DisableMovement();
+		}
+	}
 }

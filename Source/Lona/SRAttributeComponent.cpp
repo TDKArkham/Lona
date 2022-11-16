@@ -6,14 +6,16 @@
 USRAttributeComponent::USRAttributeComponent()
 {
 	HealthMax = 100.0f;
+	MagicPoolMax = 50;
+	
 	Health = HealthMax;
+	MagicPool = MagicPoolMax;
 }
 
 
 void USRAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 float USRAttributeComponent::GetHealth() const
@@ -50,6 +52,30 @@ bool USRAttributeComponent::ApplyHealthChange(AActor* InstigateActor, float Delt
 	if (Delta != 0)
 	{
 		OnHealthChanged.Broadcast(InstigateActor, this, Health, Delta);
+	}
+
+	return Delta != 0;
+}
+
+int32 USRAttributeComponent::GetMagicPool() const
+{
+	return MagicPool;
+}
+
+int32 USRAttributeComponent::GetMagicPoolMax() const
+{
+	return MagicPoolMax;
+}
+
+bool USRAttributeComponent::ApplyMagicPoolChange(float Delta)
+{
+	float OldPool = MagicPool;
+	MagicPool = FMath::Clamp(MagicPool + Delta, 0.0f, MagicPoolMax);
+	Delta = MagicPool - OldPool;
+
+	if (Delta != 0)
+	{
+		OnMagicPoolChanged.Broadcast(nullptr, this, MagicPool, Delta);
 	}
 
 	return Delta != 0;

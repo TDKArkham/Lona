@@ -32,6 +32,9 @@ public:
 	
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+private:
+	bool bCanStartAction;
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	USpringArmComponent* CameraBoom;
@@ -50,6 +53,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	int32 AttackCost;
 	
 	void MoveRight(float Value);
 
@@ -58,7 +64,6 @@ protected:
 	UFUNCTION()
 	void UpdateCharacterFaceDirection();
 
-public:
-	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	USRAttributeComponent* GetAttributeComponent() const;
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta);
 };
