@@ -170,6 +170,8 @@ void ASideRunnerCharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeC
 			//Disable Movement & Collision
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetCharacterMovement()->DisableMovement();
+
+			GetCapsuleComponent()->SetSimulatePhysics(true);
 		}
 	}
 }

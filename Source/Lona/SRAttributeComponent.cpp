@@ -8,14 +8,15 @@ USRAttributeComponent::USRAttributeComponent()
 	HealthMax = 100.0f;
 	MagicPoolMax = 50;
 	
-	Health = HealthMax;
-	MagicPool = MagicPoolMax;
 }
 
 
 void USRAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	Health = HealthMax;
+	MagicPool = MagicPoolMax;
 }
 
 float USRAttributeComponent::GetHealth() const
