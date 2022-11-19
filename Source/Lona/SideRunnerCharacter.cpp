@@ -27,6 +27,9 @@ ASideRunnerCharacter::ASideRunnerCharacter()
 	GetCharacterMovement()->CrouchedHalfHeight = 55.0f;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh());
+
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 500.0f;
@@ -38,6 +41,8 @@ ASideRunnerCharacter::ASideRunnerCharacter()
 	AttributeComponent = CreateDefaultSubobject<USRAttributeComponent>(TEXT("AttributeComponent"));
 
 	AttackCost = 1;
+
+	SocketName = "SpawnSocket";
 
 	bCanStartAction = true;
 	bIsFacingRight = true;
@@ -74,6 +79,29 @@ void ASideRunnerCharacter::MoveRight(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
+		if(Value > 0)
+		{
+			if(bIsFacingRight)
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+			}
+			else
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 250.0f;
+			}
+		}
+		if(Value < 0)
+		{
+			if (bIsFacingRight)
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 250.0f;
+			}
+			else
+			{
+				GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+			}
+		}
+		
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
@@ -88,40 +116,50 @@ void ASideRunnerCharacter::Fire()
 {
 	if (bCanStartAction && ProjectileClass && AttributeComponent->ApplyMagicPoolChange(-AttackCost))
 	{
-		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PC)
+		if (AttackMontage)
 		{
-			/*float PositionX;
-			float PositionY;
-			PC->GetMousePosition(PositionX, PositionY);
-
-			float TargetPitch = -UKismetMathLibrary::DegAtan2(PositionY - BaseFirePosition.Y, PositionX - BaseFirePosition.X);
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::SanitizeFloat(TargetPitch));*/
-
-			FVector WorldLocation;
-			FVector WorldDirection;
-			PC->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
-			FVector WorldLocationOffset = WorldLocation + WorldDirection * 100000.0f;
-
-			FVector ActorLocation = GetActorLocation();
-
-			FVector AimPoint;
-			AimPoint.X = ActorLocation.X;
-			AimPoint.Y = (ActorLocation.X - WorldLocation.X) * (WorldLocationOffset.Y - WorldLocation.Y) / (WorldLocationOffset.X - WorldLocation.X) + WorldLocation.Y;
-			AimPoint.Z = (ActorLocation.X - WorldLocation.X) * (WorldLocationOffset.Z - WorldLocation.Z) / (WorldLocationOffset.X - WorldLocation.X) + WorldLocation.Z;
-
-			FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(ActorLocation, AimPoint);
-
-			FTransform SpawnTM(SpawnRotation, ActorLocation);
-
-			FActorSpawnParameters SpawnParameters;
-			SpawnParameters.Instigator = this;
-			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParameters);
+			PlayAnimMontage(AttackMontage);
+			FTimerHandle FireTimer;
+			GetWorldTimerManager().SetTimer(FireTimer, this, &ASideRunnerCharacter::Fire_TimeElapsed, 0.3, false);
 		}
 	}
+}
 
+void ASideRunnerCharacter::Fire_TimeElapsed()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PC)
+	{
+		/*float PositionX;
+		float PositionY;
+		PC->GetMousePosition(PositionX, PositionY);
+
+		float TargetPitch = -UKismetMathLibrary::DegAtan2(PositionY - BaseFirePosition.Y, PositionX - BaseFirePosition.X);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::SanitizeFloat(TargetPitch));*/
+
+		FVector WorldLocation;
+		FVector WorldDirection;
+		PC->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+		FVector WorldLocationOffset = WorldLocation + WorldDirection * 100000.0f;
+
+		FVector SpawnLocation = Weapon->GetSocketLocation(SocketName);
+		SpawnLocation.X = GetActorLocation().X;
+
+		FVector AimPoint;
+		AimPoint.X = SpawnLocation.X;
+		AimPoint.Y = (SpawnLocation.X - WorldLocation.X) * (WorldLocationOffset.Y - WorldLocation.Y) / (WorldLocationOffset.X - WorldLocation.X) + WorldLocation.Y;
+		AimPoint.Z = (SpawnLocation.X - WorldLocation.X) * (WorldLocationOffset.Z - WorldLocation.Z) / (WorldLocationOffset.X - WorldLocation.X) + WorldLocation.Z;
+
+		FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, AimPoint);
+
+		FTransform SpawnTM(SpawnRotation, SpawnLocation);
+
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Instigator = this;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParameters);
+	}
 }
 
 void ASideRunnerCharacter::UpdateCharacterFaceDirection()

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SRAICharacter.generated.h"
 
+class UBoxComponent;
 class UPawnSensingComponent;
 class USRAttributeComponent;
 

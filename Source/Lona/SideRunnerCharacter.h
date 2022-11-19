@@ -42,8 +42,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	UCameraComponent* FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USkeletalMeshComponent* Weapon;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attributes")
 	USRAttributeComponent* AttributeComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* AttackMontage;
+
+	UPROPERTY(VisibleAnywhere, Category = "Animation")
+	FName SocketName;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Direction")
 	bool bIsFacingRight;
@@ -60,6 +69,9 @@ protected:
 	void MoveRight(float Value);
 
 	void Fire();
+
+	UFUNCTION()
+	void Fire_TimeElapsed();
 
 	UFUNCTION()
 	void UpdateCharacterFaceDirection();
