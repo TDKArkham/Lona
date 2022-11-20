@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* Weapon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	UAudioComponent* AudioComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attributes")
 	USRAttributeComponent* AttributeComponent;
 

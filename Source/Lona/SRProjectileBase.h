@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SRProjectileBase.generated.h"
 
+class USoundCue;
 class UNiagaraSystem;
 class UNiagaraComponent;
 class USphereComponent;
@@ -38,6 +39,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	UNiagaraSystem* HitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+	USoundCue* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+	FVector EffectSpawnScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile")
 	float DamageAmount;

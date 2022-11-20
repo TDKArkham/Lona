@@ -10,6 +10,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Lona/SideRunnerCharacter.h"
 #include "Lona/SRAttributeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -35,10 +37,25 @@ void ASRAICharacter::Tick(float DeltaTime)
 
 }
 
+void ASRAICharacter::OnSeePawn(APawn* Pawn)
+{
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		UBlackboardComponent* BB = AIC->GetBlackboardComponent();
+		if (BB)
+		{
+			BB->SetValueAsObject("TargetActor", Pawn);
+		}
+	}
+}
+
 void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeComponent* OwnerComponent, float NewValue, float Delta)
 {
 	if (Delta < 0.0f)
 	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", UGameplayStatics::GetTimeSeconds(GetWorld()));
+		
 		if (NewValue <= 0.0f)
 		{
 			//Disable Behavior Tree
@@ -62,15 +79,4 @@ void ASRAICharacter::OnHealthChanged(AActor* InstigateActor, USRAttributeCompone
 	}
 }
 
-void ASRAICharacter::OnSeePawn(APawn* Pawn)
-{
-	AAIController* AIC = Cast<AAIController>(GetController());
-	if (AIC)
-	{
-		UBlackboardComponent* BB = AIC->GetBlackboardComponent();
-		if (BB)
-		{
-			BB->SetValueAsObject("TargetActor", Pawn);
-		}
-	}
-}
+

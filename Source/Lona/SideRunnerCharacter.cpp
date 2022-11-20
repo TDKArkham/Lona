@@ -5,6 +5,7 @@
 
 #include "SRAttributeComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -37,6 +38,8 @@ ASideRunnerCharacter::ASideRunnerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 
 	AttributeComponent = CreateDefaultSubobject<USRAttributeComponent>(TEXT("AttributeComponent"));
 
@@ -116,6 +119,7 @@ void ASideRunnerCharacter::Fire()
 {
 	if (bCanStartAction && ProjectileClass && AttributeComponent->ApplyMagicPoolChange(-AttackCost))
 	{
+		bCanStartAction = false;
 		if (AttackMontage)
 		{
 			PlayAnimMontage(AttackMontage);
@@ -159,6 +163,9 @@ void ASideRunnerCharacter::Fire_TimeElapsed()
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParameters);
+		AudioComponent->Play();
+		
+		bCanStartAction = true;
 	}
 }
 

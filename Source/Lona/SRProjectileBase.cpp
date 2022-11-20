@@ -7,7 +7,9 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 
 ASRProjectileBase::ASRProjectileBase()
 {
@@ -29,6 +31,7 @@ ASRProjectileBase::ASRProjectileBase()
 	NiagaraParticleComponent->SetAutoActivate(true);
 
 	DamageAmount = 5.0f;
+	EffectSpawnScale = FVector(1);
 }
 
 void ASRProjectileBase::PostInitializeComponents()
@@ -55,7 +58,12 @@ void ASRProjectileBase::HitExplode_Implementation()
 {
 	if(HitEffect)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect, GetActorLocation(), GetActorRotation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect, GetActorLocation(), GetActorRotation(), EffectSpawnScale);
+	}
+
+	if(HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation(), GetActorRotation());
 	}
 	
 	Destroy();
